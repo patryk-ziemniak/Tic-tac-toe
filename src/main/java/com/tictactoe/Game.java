@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Game {
 
-    private List<BoardColumn> boardColumns = new ArrayList<>();
+    private final List<BoardColumn> boardColumns = new ArrayList<>();
 
     public Game() {
         boardColumns.add(new BoardColumn());

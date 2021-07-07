@@ -5,7 +5,7 @@ import java.util.List;
 
 public class BoardColumn {
 
-    private List<Symbol> column = new ArrayList<>();
+    private final List<Symbol> column = new ArrayList<>();
 
     public BoardColumn() {
         column.add(Symbol.NONE);

@@ -5,7 +5,7 @@ import java.util.Random;
 public class GameController {
 
     private Game game = new Game();
-    private Random generator = new Random();
+    private final Random generator = new Random();
     private Symbol playerSymbol;
     private Symbol computerSymbol;
     private Symbol whoseMove;
@@ -55,14 +55,12 @@ public class GameController {
         Symbol winner = game.checkWinner();
         boolean emptyFields = game.checkLegalMovePossible();
 
-        if (winner == Symbol.NONE && emptyFields == true) {
-            status = GameStatus.PROCESSING;
-        } else if (winner == Symbol.NONE && emptyFields == false) {
-            status = GameStatus.DRAW;
-        } else if (winner == playerSymbol) {
+        if (winner == playerSymbol) {
             status = GameStatus.WIN;
         } else if (winner == computerSymbol) {
             status = GameStatus.LOSE;
+        } else if (winner == Symbol.NONE && emptyFields == false) {
+            status = GameStatus.DRAW;
         }
         return status;
     }
