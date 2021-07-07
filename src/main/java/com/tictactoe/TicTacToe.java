@@ -1,6 +1,7 @@
 package com.tictactoe;
 
-public class ApplicationRunner {
+public class TicTacToe {
+
     public static void main(String[] args) {
 
     }
