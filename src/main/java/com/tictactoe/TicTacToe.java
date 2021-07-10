@@ -1,11 +1,8 @@
 package com.tictactoe;
 
 import javafx.application.Application;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -14,8 +11,9 @@ import javafx.stage.Stage;
 
 public class TicTacToe extends Application {
 
-    private Image background = new Image("file:src/main/resources/background.jpg");
-    private Image SymbolO = new Image("file:src/main/resources/Symbol-O.jpg");
+    private Image background = new Image("file:src/main/resources/background.png");
+    private Image symbolO = new Image("file:src/main/resources/symbolO.png");
+    private Image symbolX = new Image("file:src/main/resources/symbolX.png");
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -36,13 +34,13 @@ public class TicTacToe extends Application {
         RowConstraints row3 = new RowConstraints(114);
         gridPane.getColumnConstraints().addAll(col1, col2, col3, col4);
         gridPane.getRowConstraints().addAll(row1,row2,row3);
-        gridPane.setGridLinesVisible(true);                //linie oddzielajace kolumny i rzedy
+        gridPane.setGridLinesVisible(true);                //lines showing columns and rows
 
-        ImageView Symbol11 = new ImageView(SymbolO);
+        ImageView Symbol11 = new ImageView(symbolO);
         gridPane.add(Symbol11, 1, 1);
-        GridPane.setHalignment(Symbol11, HPos.LEFT);
-        GridPane.setValignment(Symbol11, VPos.TOP);
 
+        ImageView Symbol22 = new ImageView(symbolX);
+        gridPane.add(Symbol22, 2, 1);
 
         Scene scene = new Scene(gridPane, 700, 392, Color.BLACK);
 
