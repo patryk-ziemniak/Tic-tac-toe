@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -19,28 +20,36 @@ public class TicTacToe extends Application {
     private final Image symbolO = new Image("file:src/main/resources/symbolO.png");
     private final Image symbolX = new Image("file:src/main/resources/symbolX.png");
 
-    public void displayBoardFieldsSymbols() {
-
+    public void displayBoardFieldsSymbols(GridPane gameField, GameController gameController) {
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                if (gameController.getSymbol(x, y) == Symbol.O) {
+                    gameField.add(new ImageView(symbolO), x, y);
+                } else if (gameController.getSymbol(x, y) == Symbol.X) {
+                    gameField.add(new ImageView(symbolX), x, y);
+                }
+            }
+        }
     }
 
-    public void clearBoardFields() {
-
+    public void clearBoardFields(GridPane gameBoard) {
+        gameBoard.getChildren().removeIf(node -> node.getClass() == ImageView.class);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        GridPane gameField = new GridPane();
-        gameField.setPadding(new Insets(25, 25, 25, 25));
+        GridPane gameBoard = new GridPane();
+        gameBoard.setPadding(new Insets(25, 25, 25, 25));
         ColumnConstraints col1GF = new ColumnConstraints(114);
         ColumnConstraints col2GF = new ColumnConstraints(114);
         ColumnConstraints col3GF = new ColumnConstraints(114);
         RowConstraints row1GF = new RowConstraints(114);
         RowConstraints row2GF = new RowConstraints(114);
         RowConstraints row3GF = new RowConstraints(114);
-        gameField.getColumnConstraints().addAll(col1GF, col2GF, col3GF);
-        gameField.getRowConstraints().addAll(row1GF, row2GF, row3GF);
-//        gameField.setGridLinesVisible(true);                //lines showing columns and rows lines in application
+        gameBoard.getColumnConstraints().addAll(col1GF, col2GF, col3GF);
+        gameBoard.getRowConstraints().addAll(row1GF, row2GF, row3GF);
+        gameBoard.setGridLinesVisible(true);                //lines showing columns and rows lines in application
 
         GridPane menuPanel = new GridPane();
         menuPanel.setPadding(new Insets(25, 25, 25, 0));
@@ -102,13 +111,37 @@ public class TicTacToe extends Application {
 
         HBox root = new HBox();
         root.setBackground(background);
-        root.getChildren().addAll(gameField, menuPanel);
+        root.getChildren().addAll(gameBoard, menuPanel);
 
         Scene scene = new Scene(root, 700, 392, Color.BLACK);
 
         primaryStage.setTitle("Tic Tac Toe");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        /*GameController gameController = new GameController();
+        Symbol playerSymbol = gameController.getPlayerSymbol();
+        Symbol computerSymbol = gameController.getComputerSymbol();
+        //gameController.newGame(); Loop 'for' for displaying status of every field; <-0 Do that when player clicks on button "New Game"
+
+        while (gameController.checkGameStatus() == GameStatus.PROCESSING) {
+            //Display who's move
+            if(gameController.getWhoseMove() == computerSymbol) {
+                gameController.doComputerMove();
+                gameController.setWhoseMove(playerSymbol);
+            } else {
+                gameController.setSymbol(playerSymbol, 0,0); //Do that on player click on specific field(X,Y)
+                gameController.setWhoseMove(computerSymbol);
+            }
+            //Loop 'for' for displaying status of every field (X/O/Empty)
+        }
+        if(gameController.checkGameStatus() == GameStatus.DRAW) {
+            //Show text "DRAW" on game board
+        } else if (gameController.checkGameStatus() == GameStatus.LOSE) {
+            //Show text "YOU LOSE" on game board
+        } else if (gameController.checkGameStatus() == GameStatus.WIN) {
+            //Show text "YOU WIN" on game board
+        }*/
     }
 
     public static void main(String[] args) {
