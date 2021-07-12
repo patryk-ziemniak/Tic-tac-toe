@@ -55,34 +55,30 @@ public class TicTacToe extends Application {
         return result;
     }
 
+    private void popupSetting(GridPane menuPanel, Popup popup, Label popupText) {
+        popupText.setFont(new Font(50));
+        popupText.setAlignment(Pos.CENTER);
+        popup.getContent().clear();
+        popup.getContent().add(popupText);
+        popup.show(menuPanel, 1025, 540);
+    }
+
     public boolean checkGameStatus(GridPane menuPanel, Popup popup) {
         boolean result = false;
         if (gameController.checkGameStatus() == GameStatus.DRAW) {
-            popup.getContent().clear();
             Label popupText = new Label("DRAW!");
-            popupText.setFont(new Font(50));
             popupText.setTextFill(Color.BLACK);
-            popupText.setAlignment(Pos.CENTER);
-            popup.getContent().addAll(popupText);
-            popup.show(menuPanel, 1025, 540);
+            popupSetting(menuPanel, popup, popupText);
             result = true;
         } else if (gameController.checkGameStatus() == GameStatus.LOSE) {
-            popup.getContent().clear();
             Label popupText = new Label("YOU LOSE!");
-            popupText.setFont(new Font(50));
             popupText.setTextFill(Color.RED);
-            popupText.setAlignment(Pos.CENTER);     //TODO Refactor
-            popup.getContent().addAll(popupText);
-            popup.show(menuPanel, 1025, 540);
+            popupSetting(menuPanel, popup, popupText);
             result = true;
         } else if (gameController.checkGameStatus() == GameStatus.WIN) {
-            popup.getContent().clear();
             Label popupText = new Label("YOU WIN!");
-            popupText.setFont(new Font(50));
             popupText.setTextFill(Color.web("08FF00"));
-            popupText.setAlignment(Pos.CENTER);
-            popup.getContent().addAll(popupText);
-            popup.show(menuPanel, 1025, 540);
+            popupSetting(menuPanel, popup, popupText);
             result = true;
         }
         return result;
@@ -108,7 +104,7 @@ public class TicTacToe extends Application {
         RowConstraints row3GF = new RowConstraints(114);
         gameBoard.getColumnConstraints().addAll(col1GF, col2GF, col3GF);
         gameBoard.getRowConstraints().addAll(row1GF, row2GF, row3GF);
-//        gameBoard.setGridLinesVisible(true);                //lines showing columns and rows lines in application
+//        gameBoard.setGridLinesVisible(true);                //lines showing columns and rows in application for debugging
 
         GridPane menuPanel = new GridPane();
         menuPanel.setPadding(new Insets(25, 25, 25, 0));
@@ -123,7 +119,20 @@ public class TicTacToe extends Application {
         RowConstraints row5MP = new RowConstraints(56);
         menuPanel.getColumnConstraints().addAll(col0MP, col1MP, col2MP);
         menuPanel.getRowConstraints().addAll(row0MP, row1MP, row2MP, row3MP, row4MP, row5MP);
-//        menuPanel.setGridLinesVisible(true);                //lines showing columns and rows lines in application
+//        menuPanel.setGridLinesVisible(true);                //lines showing columns and rows in application for debugging
+
+        Popup popup = new Popup(); //used to show WIN, LOSE, DRAW and "can't place symbol" communicates
+
+        Button newGame = new Button("New Game");
+        menuPanel.add(newGame, 2, 0);
+        GridPane.setHalignment(newGame, HPos.CENTER);
+        GridPane.setValignment(newGame, VPos.TOP);
+        newGame.setOnAction(click -> {
+            gameController.newGame();
+            clearBoardFields(gameBoard);
+            popup.hide();
+            computerStartsMove(gameBoard);
+        });
 
         Label player = new Label("Player");
         menuPanel.add(player, 0, 1);
@@ -143,11 +152,6 @@ public class TicTacToe extends Application {
         vs.setFont(new Font(24.0));
         GridPane.setHalignment(vs, HPos.CENTER);
 
-        Label computer = new Label("Computer");
-        menuPanel.add(computer, 2, 1);
-        GridPane.setHalignment(computer, HPos.RIGHT);
-        computer.setFont(new Font(24.0));
-
         ImageView computerSymbolImage;
         if (computerSymbol == Symbol.O) {
             computerSymbolImage = new ImageView(symbolO24);
@@ -157,18 +161,10 @@ public class TicTacToe extends Application {
         menuPanel.add(computerSymbolImage, 2, 1);
         GridPane.setHalignment(computerSymbolImage, HPos.LEFT);
 
-        Popup popup = new Popup(); //used to show WIN, LOSE, DRAW and "can't place symbol" communicates
-
-        Button newGame = new Button("New Game");
-        menuPanel.add(newGame, 2, 0);
-        GridPane.setHalignment(newGame, HPos.CENTER);
-        GridPane.setValignment(newGame, VPos.TOP);
-        newGame.setOnAction(click -> {
-            gameController.newGame();
-            clearBoardFields(gameBoard);
-            popup.hide();
-            computerStartsMove(gameBoard);
-        });
+        Label computer = new Label("Computer");
+        menuPanel.add(computer, 2, 1);
+        GridPane.setHalignment(computer, HPos.RIGHT);
+        computer.setFont(new Font(24.0));
 
         computerStartsMove(gameBoard);
         gameBoard.setOnMouseClicked(click -> {
@@ -179,7 +175,7 @@ public class TicTacToe extends Application {
                 popupText.setFont(new Font(24));
                 popupText.setTextFill(Color.RED);
                 popupText.setAlignment(Pos.CENTER);
-                popup.getContent().addAll(popupText);
+                popup.getContent().add(popupText);
                 popup.show(menuPanel, 1000, 510);
                 return;
             }
