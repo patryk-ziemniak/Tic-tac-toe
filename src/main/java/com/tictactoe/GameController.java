@@ -8,7 +8,7 @@ public class GameController {
     private final Random generator = new Random();
     private Symbol playerSymbol;
     private Symbol computerSymbol;
-    private Symbol whoseMove;
+    private Symbol whoStarts;
 
     public GameController() {
         if (generator.nextInt(2) == 0) {
@@ -19,9 +19,9 @@ public class GameController {
             this.computerSymbol = Symbol.O;
         }
         if (generator.nextInt(2) == 0) {
-            this.whoseMove = Symbol.O;
+            this.whoStarts = Symbol.O;
         } else {
-            this.whoseMove = Symbol.X;
+            this.whoStarts = Symbol.X;
         }
     }
 
@@ -57,6 +57,11 @@ public class GameController {
 
     public void newGame() {
         game = new Game();
+        if (generator.nextInt(2) == 0) {
+            this.whoStarts = Symbol.O;
+        } else {
+            this.whoStarts = Symbol.X;
+        }
     }
 
     public Symbol getPlayerSymbol() {
@@ -67,11 +72,11 @@ public class GameController {
         return computerSymbol;
     }
 
-    public Symbol getWhoseMove() {
-        return whoseMove;
+    public Symbol getWhoStarts() {
+        return whoStarts;
     }
 
-    public void setWhoseMove(Symbol whoseMove) {
-        this.whoseMove = whoseMove;
+    public void setWhoStarts(Symbol whoStarts) {
+        this.whoStarts = whoStarts;
     }
 }

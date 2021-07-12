@@ -3,6 +3,7 @@ package com.tictactoe;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 public class TicTacToe extends Application {
@@ -25,13 +27,13 @@ public class TicTacToe extends Application {
     Symbol playerSymbol = gameController.getPlayerSymbol();
     Symbol computerSymbol = gameController.getComputerSymbol();
 
-    public void displayBoardFieldsSymbols(GridPane gameField, GameController gameController) {
+    public void displayBoardFieldsSymbols(GridPane gameBoard) {
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
                 if (gameController.getSymbol(x, y) == Symbol.O) {
-                    gameField.add(new ImageView(symbolO), x, y);
+                    gameBoard.add(new ImageView(symbolO), x, y);
                 } else if (gameController.getSymbol(x, y) == Symbol.X) {
-                    gameField.add(new ImageView(symbolX), x, y);
+                    gameBoard.add(new ImageView(symbolX), x, y);
                 }
             }
         }
@@ -53,41 +55,43 @@ public class TicTacToe extends Application {
         return result;
     }
 
-    public void nextMove(GridPane gameBoard, Symbol whoseMove, GridPane menuPanel, ImageView turnOfImage, Label statusDetailLabel) {
-        menuPanel.getChildren().removeAll(turnOfImage);
-        if (whoseMove == Symbol.O) {
-            turnOfImage = new ImageView(symbolO24);
-        } else if (whoseMove == Symbol.X) {
-            turnOfImage = new ImageView(symbolX24);
-        }
-        menuPanel.add(turnOfImage, 2, 2);
-
-        if (gameController.getWhoseMove() == computerSymbol) {
-            gameController.doComputerMove();
-            gameController.setWhoseMove(playerSymbol);
-        } else {
-            gameBoard.setOnMouseClicked(field -> gameController.setSymbol(playerSymbol, convertPixelsToGridIndex(field.getX()),
-                    convertPixelsToGridIndex(field.getY())));
-            gameController.setWhoseMove(computerSymbol);
-        }
-        displayBoardFieldsSymbols(gameBoard, gameController);
-        menuPanel.getChildren().remove(statusDetailLabel);
+    public boolean checkGameStatus(GridPane menuPanel, Popup popup) {
+        boolean result = false;
         if (gameController.checkGameStatus() == GameStatus.DRAW) {
-            statusDetailLabel = new Label("DRAW!");
-            menuPanel.add(statusDetailLabel, 2, 3);
-            statusDetailLabel.setFont(new Font(24.0));
+            popup.getContent().clear();
+            Label popupText = new Label("DRAW!");
+            popupText.setFont(new Font(50));
+            popupText.setTextFill(Color.BLACK);
+            popupText.setAlignment(Pos.CENTER);
+            popup.getContent().addAll(popupText);
+            popup.show(menuPanel, 1025, 540);
+            result = true;
         } else if (gameController.checkGameStatus() == GameStatus.LOSE) {
-            statusDetailLabel = new Label("YOU LOSE!");
-            menuPanel.add(statusDetailLabel, 2, 3);
-            statusDetailLabel.setFont(new Font(24.0));
+            popup.getContent().clear();
+            Label popupText = new Label("YOU LOSE!");
+            popupText.setFont(new Font(50));
+            popupText.setTextFill(Color.RED);
+            popupText.setAlignment(Pos.CENTER);     //TODO Refactor
+            popup.getContent().addAll(popupText);
+            popup.show(menuPanel, 1025, 540);
+            result = true;
         } else if (gameController.checkGameStatus() == GameStatus.WIN) {
-            statusDetailLabel = new Label("YOU WIN!");
-            menuPanel.add(statusDetailLabel, 2, 3);
-            statusDetailLabel.setFont(new Font(24.0));
-        } else {
-            statusDetailLabel = new Label("In Game");
-            menuPanel.add(statusDetailLabel, 2, 3);
-            statusDetailLabel.setFont(new Font(24.0));
+            popup.getContent().clear();
+            Label popupText = new Label("YOU WIN!");
+            popupText.setFont(new Font(50));
+            popupText.setTextFill(Color.web("08FF00"));
+            popupText.setAlignment(Pos.CENTER);
+            popup.getContent().addAll(popupText);
+            popup.show(menuPanel, 1025, 540);
+            result = true;
+        }
+        return result;
+    }
+
+    private void computerStartsMove(GridPane gameBoard) {
+        if (gameController.getWhoStarts() == computerSymbol) {
+            gameController.doComputerMove();
+            displayBoardFieldsSymbols(gameBoard);
         }
     }
 
@@ -104,14 +108,14 @@ public class TicTacToe extends Application {
         RowConstraints row3GF = new RowConstraints(114);
         gameBoard.getColumnConstraints().addAll(col1GF, col2GF, col3GF);
         gameBoard.getRowConstraints().addAll(row1GF, row2GF, row3GF);
-        gameBoard.setGridLinesVisible(true);                //lines showing columns and rows lines in application
+//        gameBoard.setGridLinesVisible(true);                //lines showing columns and rows lines in application
 
         GridPane menuPanel = new GridPane();
         menuPanel.setPadding(new Insets(25, 25, 25, 0));
-        ColumnConstraints col0MP = new ColumnConstraints(104);    // columns in total 283 px
+        ColumnConstraints col0MP = new ColumnConstraints(104);    // columns width in total 283 px
         ColumnConstraints col1MP = new ColumnConstraints(35);
         ColumnConstraints col2MP = new ColumnConstraints(144);
-        RowConstraints row0MP = new RowConstraints(30);       // rows in total 342 px
+        RowConstraints row0MP = new RowConstraints(30);       // rows height in total 342 px
         RowConstraints row1MP = new RowConstraints(50);
         RowConstraints row2MP = new RowConstraints(50);
         RowConstraints row3MP = new RowConstraints(78);
@@ -119,16 +123,7 @@ public class TicTacToe extends Application {
         RowConstraints row5MP = new RowConstraints(56);
         menuPanel.getColumnConstraints().addAll(col0MP, col1MP, col2MP);
         menuPanel.getRowConstraints().addAll(row0MP, row1MP, row2MP, row3MP, row4MP, row5MP);
-        menuPanel.setGridLinesVisible(true);                //lines showing columns and rows lines in application
-
-        Button newGame = new Button("New Game");
-        menuPanel.add(newGame, 2, 0);
-        GridPane.setHalignment(newGame, HPos.CENTER);
-        GridPane.setValignment(newGame, VPos.TOP);
-        newGame.setOnAction(click -> {
-            gameController.newGame();
-            clearBoardFields(gameBoard);
-        });
+//        menuPanel.setGridLinesVisible(true);                //lines showing columns and rows lines in application
 
         Label player = new Label("Player");
         menuPanel.add(player, 0, 1);
@@ -142,6 +137,11 @@ public class TicTacToe extends Application {
         }
         menuPanel.add(playerSymbolImage, 0, 1);
         GridPane.setHalignment(playerSymbolImage, HPos.RIGHT);
+
+        Label vs = new Label("vs");
+        menuPanel.add(vs, 1, 1);
+        vs.setFont(new Font(24.0));
+        GridPane.setHalignment(vs, HPos.CENTER);
 
         Label computer = new Label("Computer");
         menuPanel.add(computer, 2, 1);
@@ -157,46 +157,40 @@ public class TicTacToe extends Application {
         menuPanel.add(computerSymbolImage, 2, 1);
         GridPane.setHalignment(computerSymbolImage, HPos.LEFT);
 
-        Label vs = new Label("vs");
-        menuPanel.add(vs, 1, 1);
-        vs.setFont(new Font(24.0));
-        GridPane.setHalignment(vs, HPos.CENTER);
+        Popup popup = new Popup(); //used to show WIN, LOSE, DRAW and can't place communicates
 
-        Label turnOf = new Label("Turn of");
-        menuPanel.add(turnOf, 0, 2, 1, 1);
-        GridPane.setHalignment(turnOf, HPos.RIGHT);
-        turnOf.setFont(new Font(24.0));
+        Button newGame = new Button("New Game");
+        menuPanel.add(newGame, 2, 0);
+        GridPane.setHalignment(newGame, HPos.CENTER);
+        GridPane.setValignment(newGame, VPos.TOP);
+        newGame.setOnAction(click -> {
+            gameController.newGame();
+            clearBoardFields(gameBoard);
+            popup.hide();
+            computerStartsMove(gameBoard);
+        });
 
-        ImageView turnOfImage = new ImageView();
-        if (gameController.getWhoseMove() == Symbol.O) {
-            turnOfImage = new ImageView(symbolO24);
-        } else if (gameController.getWhoseMove() == Symbol.X) {
-            turnOfImage = new ImageView(symbolX24);
-        }
-        menuPanel.add(turnOfImage, 2, 2);
-
-        Label statusLabel = new Label("Status:");
-        menuPanel.add(statusLabel, 0, 3);
-        GridPane.setHalignment(statusLabel, HPos.RIGHT);
-        statusLabel.setFont(new Font(24.0));
-
-        Label statusDetailLabel = new Label("In Game");
-        menuPanel.add(statusDetailLabel, 2, 3);
-        GridPane.setHalignment(statusDetailLabel, HPos.LEFT);
-        statusDetailLabel.setFont(new Font(24.0));
-
-        Label communicates = new Label(""); //You can't place your\nsymbol on enemy's field!\nPlease choose empty field. & communicates.setUnderline(true);
-        menuPanel.add(communicates, 0, 4, 3, 2);
-        GridPane.setHalignment(communicates, HPos.CENTER);
-        GridPane.setValignment(communicates, VPos.CENTER);
-        communicates.setFont(new Font(24.0));
-
-        Button nextMove = new Button("Next Move");
-        menuPanel.add(nextMove, 0, 0);
-        GridPane.setHalignment(nextMove, HPos.CENTER);
-        GridPane.setValignment(nextMove, VPos.TOP);
-        ImageView finalTurnOfImage = turnOfImage;
-        nextMove.setOnAction(click -> nextMove(gameBoard, gameController.getWhoseMove(), menuPanel, finalTurnOfImage, statusDetailLabel));
+        computerStartsMove(gameBoard);
+        gameBoard.setOnMouseClicked(click -> {
+            popup.hide();
+            if(!gameController.setSymbol(playerSymbol, convertPixelsToGridIndex(click.getX()), convertPixelsToGridIndex(click.getY()))) {
+                popup.getContent().clear();
+                Label popupText = new Label("You can't place your symbol\non field with symbol!\nPlease choose empty field");
+                popupText.setFont(new Font(24));
+                popupText.setTextFill(Color.RED);
+                popupText.setAlignment(Pos.CENTER);
+                popup.getContent().addAll(popupText);
+                popup.show(menuPanel, 1000, 510);
+                return;
+            }
+            displayBoardFieldsSymbols(gameBoard);
+            if (checkGameStatus(menuPanel, popup)) {
+                return;
+            }
+            gameController.doComputerMove();
+            displayBoardFieldsSymbols(gameBoard);
+            checkGameStatus(menuPanel, popup);
+        });
 
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(background, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
