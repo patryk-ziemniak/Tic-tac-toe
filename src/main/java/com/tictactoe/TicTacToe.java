@@ -44,12 +44,12 @@ public class TicTacToe extends Application {
     }
 
     public int convertPixelsToGridIndex(double pixels) {
-        int result = 0;
-        if (pixels < 115) {
+        int result = -1;
+        if (pixels > 25 && pixels < 140) {
             result = 0;
-        } else if (pixels > 114 && pixels < 229) {
+        } else if (pixels > 139 && pixels < 254) {
             result = 1;
-        } else if (pixels > 228 && pixels < 343) {
+        } else if (pixels > 253 && pixels < 368) {
             result = 2;
         }
         return result;
@@ -157,7 +157,7 @@ public class TicTacToe extends Application {
         menuPanel.add(computerSymbolImage, 2, 1);
         GridPane.setHalignment(computerSymbolImage, HPos.LEFT);
 
-        Popup popup = new Popup(); //used to show WIN, LOSE, DRAW and can't place communicates
+        Popup popup = new Popup(); //used to show WIN, LOSE, DRAW and "can't place symbol" communicates
 
         Button newGame = new Button("New Game");
         menuPanel.add(newGame, 2, 0);
@@ -173,7 +173,7 @@ public class TicTacToe extends Application {
         computerStartsMove(gameBoard);
         gameBoard.setOnMouseClicked(click -> {
             popup.hide();
-            if(!gameController.setSymbol(playerSymbol, convertPixelsToGridIndex(click.getX()), convertPixelsToGridIndex(click.getY()))) {
+            if (!gameController.setSymbol(playerSymbol, convertPixelsToGridIndex(click.getX()), convertPixelsToGridIndex(click.getY()))) {
                 popup.getContent().clear();
                 Label popupText = new Label("You can't place your symbol\non field with symbol!\nPlease choose empty field");
                 popupText.setFont(new Font(24));
