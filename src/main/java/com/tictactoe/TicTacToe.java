@@ -71,13 +71,23 @@ public class TicTacToe extends Application {
             gameController.setWhoseMove(computerSymbol);
         }
         displayBoardFieldsSymbols(gameBoard, gameController);
-
+        menuPanel.getChildren().remove(statusDetailLabel);
         if (gameController.checkGameStatus() == GameStatus.DRAW) {
             statusDetailLabel = new Label("DRAW!");
+            menuPanel.add(statusDetailLabel, 2, 3);
+            statusDetailLabel.setFont(new Font(24.0));
         } else if (gameController.checkGameStatus() == GameStatus.LOSE) {
             statusDetailLabel = new Label("YOU LOSE!");
+            menuPanel.add(statusDetailLabel, 2, 3);
+            statusDetailLabel.setFont(new Font(24.0));
         } else if (gameController.checkGameStatus() == GameStatus.WIN) {
             statusDetailLabel = new Label("YOU WIN!");
+            menuPanel.add(statusDetailLabel, 2, 3);
+            statusDetailLabel.setFont(new Font(24.0));
+        } else {
+            statusDetailLabel = new Label("In Game");
+            menuPanel.add(statusDetailLabel, 2, 3);
+            statusDetailLabel.setFont(new Font(24.0));
         }
     }
 
