@@ -60,7 +60,6 @@ public class TicTacToe extends Application {
         popupText.setAlignment(Pos.CENTER);
         popup.getContent().clear();
         popup.getContent().add(popupText);
-        popup.show(menuPanel, 1025, 540);
     }
 
     public boolean checkGameStatus(GridPane menuPanel, Popup popup) {
@@ -69,16 +68,19 @@ public class TicTacToe extends Application {
             Label popupText = new Label("DRAW!");
             popupText.setTextFill(Color.BLACK);
             popupSetting(menuPanel, popup, popupText);
+            popup.show(menuPanel, 1070, 540);
             result = true;
         } else if (gameController.checkGameStatus() == GameStatus.LOSE) {
             Label popupText = new Label("YOU LOSE!");
             popupText.setTextFill(Color.RED);
             popupSetting(menuPanel, popup, popupText);
+            popup.show(menuPanel, 1025, 540);
             result = true;
         } else if (gameController.checkGameStatus() == GameStatus.WIN) {
             Label popupText = new Label("YOU WIN!");
             popupText.setTextFill(Color.web("08FF00"));
             popupSetting(menuPanel, popup, popupText);
+            popup.show(menuPanel, 1025, 540);
             result = true;
         }
         return result;
